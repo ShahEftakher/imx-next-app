@@ -11,6 +11,8 @@
     "deploy": "npx hardhat run --network localhost scripts/deploy.js"
   },
   "dependencies": {
+    "@imtbl/core-sdk": "^1.0.0-beta.3",
+    "@imtbl/imx-sdk": "^1.34.0",
     "@openzeppelin/contracts": "^4.7.3",
     "dotenv": "^16.0.3",
     "next": "12.3.1",
