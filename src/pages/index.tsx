@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { ImmutableXClient, Link } from '@imtbl/imx-sdk';
-import { ethers, Wallet } from 'ethers';
+import {  Wallet } from 'ethers';
 import { AlchemyProvider, JsonRpcProvider } from '@ethersproject/providers';
 
 interface UserInterface {
@@ -32,6 +32,14 @@ const Home: NextPage = () => {
     const assets = await client.getAssets({ user: user.address });
     console.log(assets);
   };
+
+  //question: how is marketplace connected with metamask
+  //how is getting the signer for transaction
+  //how is retrieveing data without signer
+
+  //find a way to retrieve data without signer
+  //while setting up the client
+  //
 
   const setupClient = async () => {
     const imxApiUrl = 'https://api.sandbox.x.immutable.com/v1';
