@@ -1,9 +1,15 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
-import { ImmutableXClient, Link } from '@imtbl/imx-sdk';
-import { Wallet } from 'ethers';
-import { AlchemyProvider, JsonRpcProvider } from '@ethersproject/providers';
+import { useState } from 'react';
+import { ERC721TokenType, ImmutableXClient, Link } from '@imtbl/imx-sdk';
+import {
+  NEXT_APP_SANDBOX_ENV_URL,
+  NEXT_APP_SANDBOX_LINK_URL,
+  SANDBOX_REGISTRATION_ADDRESS,
+  SANDBOX_STARK_CONTRACT_ADDRESS,
+} from '../config';
+import { useClient } from '../hooks/useClient';
+import { ethers } from 'ethers';
 
 interface UserInterface {
   address: string;
@@ -13,33 +19,43 @@ interface UserInterface {
 }
 
 const Home: NextPage = () => {
-  const [client, setClient] = useState<ImmutableXClient>(Object);
   const [user, setUser] = useState<UserInterface>(Object);
-  const [assets, setAssets] = useState(Object);
+  const [assets, setAssets] = useState(Array);
+  const [sellOrders, setSellOrders] = useState(Array);
+  const [orderCursor, setOrderCursor] = useState('');
+  const [collectionCursor, setCollectionCursor] = useState('');
+  const [collections, setCollections] = useState(Array);
+  const client: ImmutableXClient = useClient(user.address);
 
-  const link = new Link(process.env.NEXT_APP_SANDBOX_LINK_URL);
+  const link = new Link(NEXT_APP_SANDBOX_LINK_URL);
 
   const linkSetup = async () => {
     const res = await link.setup({});
     setUser(res);
   };
 
-  //not working without signer
-  //needs a client initialized by -
-  /**
-   * signer
-   * starkContractAddress
-   * registrationContractAddress
-   */
-  const getUserProjects = async () => {
-    const projects = await client.getProjects({});
-    console.log(projects);
+  const getSigner = async () => {
+    const signer = new ethers.providers.Web3Provider(
+      window.ethereum
+    ).getSigner();
+    return signer;
   };
 
   //possible with client initialized by apiAddress
   const getAllCollection = async () => {
-    const tempCollections = await client.getCollections({});
-    console.log(tempCollections);
+    const tempCollections = await client.getCollections({
+      cursor: collectionCursor,
+    });
+    setCollectionCursor(tempCollections.cursor);
+    setCollections(tempCollections.result);
+    console.log(tempCollections.cursor);
+  };
+
+  const getSellOrders = async () => {
+    const tempOrders = await client.getOrdersV3({ cursor: orderCursor });
+    console.log(tempOrders.cursor);
+    setOrderCursor(tempOrders.cursor);
+    setSellOrders(tempOrders.result);
   };
 
   const getUserAssets = async () => {
@@ -54,9 +70,66 @@ const Home: NextPage = () => {
       user: '0x3a334A490Fdd7f1c8BB7e3e004dCb6832E05DE9c',
       tokenAddress: 'eth',
     });
-
     console.log(balance.balance.toString());
   };
+
+  const getCollectionInfo = async () => {
+    const tempCollectionInfo = await client.getCollection({
+      address: '0xe5d2f645f20938470cb50f3736e010042b69c77a',
+    });
+
+    console.log(tempCollectionInfo);
+  };
+
+  const mintNFTV2 = async () => {
+    const signer = await getSigner();
+    console.log(signer)
+    const minterClient = await ImmutableXClient.build({
+      publicApiUrl: NEXT_APP_SANDBOX_ENV_URL,
+      signer,
+      starkContractAddress: SANDBOX_STARK_CONTRACT_ADDRESS,
+      registrationContractAddress: SANDBOX_REGISTRATION_ADDRESS,
+    });
+
+    const projects = await minterClient.getProjects();
+    console.log(projects);
+  };
+
+  const clearData = () => {
+    setAssets([]);
+    setCollectionCursor('');
+    setCollections([]);
+    setOrderCursor('');
+    setSellOrders([]);
+  };
+
+  const transferAsset = async () => {
+    // const result = await link.transfer([
+    //   {
+    //     type: ERC721TokenType.ERC721,
+    //     tokenId: '1',
+    //     toAddress: '0x3a334A490Fdd7f1c8BB7e3e004dCb6832E05DE9c',
+    //     tokenAddress: '0xe5d2f645f20938470cb50f3736e010042b69c77a',
+    //   },
+    // ]);
+    let result;
+    try {
+      result = await link.transfer([
+        {
+          type: ERC721TokenType.ERC721,
+          tokenId: '2',
+          toAddress: '0x3a334A490Fdd7f1c8BB7e3e004dCb6832E05DE9c',
+          tokenAddress: '0xe5d2f645f20938470cb50f3736e010042b69c77a',
+        },
+      ]);
+    } catch (error) {
+      console.log(error);
+    }
+
+    console.log(result);
+  };
+
+  // const param:any= (({ type: ERC721TokenType; tokenId: string; tokenAddress: string; } & { toAddress: string; }) | ({ type: ETHTokenType; } & { amount: string; } & { toAddress: string; }) | ({ ...; } & ... 1 more ... & { ...; }))[]
 
   //question: how is marketplace connected with metamask
   //how is getting the signer for transaction
@@ -65,20 +138,6 @@ const Home: NextPage = () => {
   //find a way to retrieve data without signer
   //while setting up the client
   //
-
-  const setupClient = async () => {
-    const imxApiUrl = 'https://api.sandbox.x.immutable.com/v1';
-    console.log(imxApiUrl);
-    const tempClient = await ImmutableXClient.build({
-      publicApiUrl: imxApiUrl,
-    });
-    console.log(tempClient);
-    setClient(tempClient);
-  };
-
-  useEffect(() => {
-    setupClient();
-  }, []);
 
   return (
     <div className="h-screen">
@@ -103,14 +162,68 @@ const Home: NextPage = () => {
           </button>
           <button
             className="border-4 p-2 bg-blue-600 rounded-lg"
+            onClick={getSellOrders}
+          >
+            Get Orders
+          </button>
+          <button
+            className="border-4 p-2 bg-blue-600 rounded-lg"
+            onClick={getAllCollection}
+          >
+            Get Collections
+          </button>
+          <button
+            className="border-4 p-2 bg-green-600 rounded-lg"
+            onClick={getCollectionInfo}
+          >
+            Get Collection
+          </button>
+          <button
+            className="border-4 p-2 bg-green-600 rounded-lg"
+            onClick={transferAsset}
+          >
+            Transfer
+          </button>
+          <button
+            className="border-4 p-2 bg-yellow-600 rounded-lg"
+            onClick={mintNFTV2}
+          >
+            Mint
+          </button>
+          <button
+            className="border-4 p-2 bg-blue-600 rounded-lg"
             onClick={getUserAssets}
           >
             Get Assets
           </button>
         </div>
-        <div className="flex flex-col justify-center items-center border-teal-600">
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={clearData}
+            className="border-4 p-2 bg-red-600 rounded-lg"
+          >
+            clear
+          </button>
+        </div>
+        <div className="flex flex-col justify-center items-center border-teal-600 p-2 m-4">
+          <p className="">{orderCursor}</p>
+          <p className="">{collectionCursor}</p>
           <p className="">{JSON.stringify(user, null, 2)}</p>
-          <p className="">{JSON.stringify(assets, null, 2)}</p>
+          <div>
+            {assets?.map((asset: any) => (
+              <p className="">{JSON.stringify(asset, null, 2)}</p>
+            ))}
+          </div>
+          <div>
+            {collections?.map((collection: any) => (
+              <p className="">{JSON.stringify(collection, null, 2)}</p>
+            ))}
+          </div>
+          <div>
+            {sellOrders?.map((order: any) => (
+              <p className="">{JSON.stringify(order, null, 2)}</p>
+            ))}
+          </div>
         </div>
       </main>
     </div>
