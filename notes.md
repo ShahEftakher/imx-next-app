@@ -15,3 +15,10 @@ issue:
 - Will it be user friendly to connect their metamask wallet
 - might be, only when minting or doing any admin op only then the connect, but once they connect they need to connect for the entirity of use
 - 
+
+So Core-sdk does not have Link to link to the starkex network
+The Client in Core-sdk is different
+It creates client from pre-defined configs
+To avail admin privilage the client in imx-sdk needed to be initialized with a signer
+In core-sdk api call with ethSigner is required for admin privilage
+and the api-call must be signed

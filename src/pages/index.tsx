@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from '@imtbl/imx-sdk';
 import { useClient } from '../hooks/useClient';
 import {
@@ -10,6 +10,7 @@ import {
   SANDBOX_STARK_CONTRACT_ADDRESS,
 } from '../config';
 import { configureProvider } from '../helper/configureProvider';
+import { Config, ImmutableX } from '@imtbl/core-sdk';
 interface UserInterface {
   address: string;
   starkPublicKey: string;
@@ -24,40 +25,50 @@ const Home: NextPage = () => {
   const [orderCursor, setOrderCursor] = useState('');
   const [collectionCursor, setCollectionCursor] = useState('');
   const [collections, setCollections] = useState(Array);
-  const [client, setClient] = useState(Object);
+  const [client, setClient] = useState<ImmutableX>(Object);
+  const [balance, setBalance] = useState('');
+  const [projects, setProjects] = useState(Array);
 
-  const link = new Link(NEXT_APP_SANDBOX_LINK_URL);
-
-  const linkSetup = async () => {
-    const res = await link.setup({});
-    setUser(res);
+  const createClient = async () => {
+    const config = Config.SANDBOX;
+    console.log(config);
+    const client = new ImmutableX(config);
+    console.log(client);
+    setClient(client);
   };
 
-  //possible with client initialized by apiAddress
-  const getAllCollection = async () => {
+  const getAllCollection = async () => {};
 
-  };
-
-  const getSellOrders = async () => {
-   
-  };
+  const getSellOrders = async () => {};
 
   const getUserAssets = async () => {
-   
+    const response = await client.listAssets({
+      user: '0x8aE41d03aac4f8D0f8eda73273B0dCFe40306f34',
+    });
+    console.log(response);
+    setAssets(response.result);
   };
 
-  //possible to know anyones balance
   const getBalance = async () => {
-    
+    const tempBalance = await client.getBalance({
+      address: 'eth',
+      owner: '0x8aE41d03aac4f8D0f8eda73273B0dCFe40306f34',
+    });
+    console.log(tempBalance);
+    setBalance(tempBalance.balance);
   };
 
-  const getCollectionInfo = async () => {
-    
+  const getProjects = async () => {
+    const provider = await configureProvider();
+    const signer = provider.getSigner();
+    const result = await client.getProjects(signer);
+    setProjects(result.result);
+    console.log(result);
   };
 
-  const mintNFTV2 = async () => {
-   
-  };
+  const getCollectionInfo = async () => {};
+
+  const mintNFTV2 = async () => {};
 
   const clearData = () => {
     setAssets([]);
@@ -67,17 +78,11 @@ const Home: NextPage = () => {
     setSellOrders([]);
   };
 
-  const transferAsset = async () => {
-    
-  };
+  const transferAsset = async () => {};
 
-  //question: how is marketplace connected with metamask
-  //how is getting the signer for transaction
-  //how is retrieveing data without signer
-
-  //find a way to retrieve data without signer
-  //while setting up the client
-  //
+  useEffect(() => {
+    createClient();
+  }, []);
 
   return (
     <div className="h-screen">
@@ -88,12 +93,6 @@ const Home: NextPage = () => {
       </Head>
       <main className="h-full">
         <div className="flex justify-between">
-          <button
-            className="border-4 p-2 bg-blue-600 rounded-lg"
-            onClick={linkSetup}
-          >
-            Link Wallet
-          </button>
           <button
             className="border-4 p-2 bg-blue-600 rounded-lg"
             onClick={getBalance}
@@ -111,6 +110,12 @@ const Home: NextPage = () => {
             onClick={getAllCollection}
           >
             Get Collections
+          </button>
+          <button
+            className="border-4 p-2 bg-blue-600 rounded-lg"
+            onClick={getProjects}
+          >
+            Get Projects
           </button>
           <button
             className="border-4 p-2 bg-green-600 rounded-lg"
@@ -147,6 +152,12 @@ const Home: NextPage = () => {
         </div>
         <div className="flex flex-col justify-center items-center border-teal-600 p-2 m-4">
           <p className="">{orderCursor}</p>
+          <p>{balance}</p>
+          <div>
+            {projects?.map((project: any) => (
+              <p className="">{JSON.stringify(project, null, 2)}</p>
+            ))}
+          </div>
           <p className="">{collectionCursor}</p>
           <p className="">{JSON.stringify(user, null, 2)}</p>
           <div>
