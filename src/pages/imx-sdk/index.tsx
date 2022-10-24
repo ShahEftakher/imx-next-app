@@ -1,15 +1,18 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useState } from 'react';
-import { Link } from '@imtbl/imx-sdk';
-import { useClient } from '../hooks/useClient';
+import { ERC721TokenType, ImmutableXClient, Link } from '@imtbl/imx-sdk';
 import {
+  ALCHEMY_API_ENDPOINT,
   NEXT_APP_SANDBOX_ENV_URL,
   NEXT_APP_SANDBOX_LINK_URL,
   SANDBOX_REGISTRATION_ADDRESS,
   SANDBOX_STARK_CONTRACT_ADDRESS,
-} from '../config';
-import { configureProvider } from '../helper/configureProvider';
+} from '../../config';
+import { useClient } from '../../hooks/useClient';
+import { ethers } from 'ethers';
+import { configureProvider } from '../../helper/configureProvider';
+
 interface UserInterface {
   address: string;
   starkPublicKey: string;
@@ -24,7 +27,7 @@ const Home: NextPage = () => {
   const [orderCursor, setOrderCursor] = useState('');
   const [collectionCursor, setCollectionCursor] = useState('');
   const [collections, setCollections] = useState(Array);
-  const [client, setClient] = useState(Object);
+  const client: ImmutableXClient = useClient();
 
   const link = new Link(NEXT_APP_SANDBOX_LINK_URL);
 
@@ -35,28 +38,75 @@ const Home: NextPage = () => {
 
   //possible with client initialized by apiAddress
   const getAllCollection = async () => {
-
+    const tempCollections = await client.getCollections({
+      cursor: collectionCursor,
+    });
+    setCollectionCursor(tempCollections.cursor);
+    setCollections(tempCollections.result);
+    console.log(tempCollections.cursor);
   };
 
   const getSellOrders = async () => {
-   
+    const tempOrders = await client.getOrdersV3({ cursor: orderCursor });
+    console.log(tempOrders.cursor);
+    setOrderCursor(tempOrders.cursor);
+    setSellOrders(tempOrders.result);
   };
 
   const getUserAssets = async () => {
-   
+    const tempAssets = await client.getAssets({ user: user.address });
+    setAssets(tempAssets.result);
+    console.log(tempAssets);
   };
 
   //possible to know anyones balance
   const getBalance = async () => {
-    
+    const balance = await client.getBalance({
+      user: '0x3a334A490Fdd7f1c8BB7e3e004dCb6832E05DE9c',
+      tokenAddress: 'eth',
+    });
+    console.log(balance.balance.toString());
   };
 
   const getCollectionInfo = async () => {
-    
+    const tempCollectionInfo = await client.getCollection({
+      address: '0xe5d2f645f20938470cb50f3736e010042b69c77a',
+    });
+
+    console.log(tempCollectionInfo);
   };
 
   const mintNFTV2 = async () => {
-   
+    const provider = await configureProvider();
+    const signer = provider.getSigner();
+    console.log(signer);
+    const minterClient = await ImmutableXClient.build({
+      publicApiUrl: NEXT_APP_SANDBOX_ENV_URL,
+      signer,
+      starkContractAddress: SANDBOX_STARK_CONTRACT_ADDRESS,
+      registrationContractAddress: SANDBOX_REGISTRATION_ADDRESS,
+    });
+
+    const projects = await minterClient.getProjects();
+
+    const result = await minterClient.mintV2([
+      {
+        users: [
+          {
+            etherKey:
+              '0x8aE41d03aac4f8D0f8eda73273B0dCFe40306f34'.toLowerCase(),
+            tokens: [
+              {
+                id: '5',
+                blueprint: 'https://gateway.pinata.cloud/ipfs/QmSLkeGyDuJgQeps5mLuVyaeMac4AM7hKR2GLCqSzuNiay',
+              },
+            ],
+          },
+        ],
+        contractAddress: '0xe5d2f645f20938470cb50f3736e010042b69c77a',
+      },
+    ]);
+    console.log(result);
   };
 
   const clearData = () => {
@@ -68,8 +118,32 @@ const Home: NextPage = () => {
   };
 
   const transferAsset = async () => {
-    
+    // const result = await link.transfer([
+    //   {
+    //     type: ERC721TokenType.ERC721,
+    //     tokenId: '1',
+    //     toAddress: '0x3a334A490Fdd7f1c8BB7e3e004dCb6832E05DE9c',
+    //     tokenAddress: '0xe5d2f645f20938470cb50f3736e010042b69c77a',
+    //   },
+    // ]);
+    let result;
+    try {
+      result = await link.transfer([
+        {
+          type: ERC721TokenType.ERC721,
+          tokenId: '2',
+          toAddress: '0x3a334A490Fdd7f1c8BB7e3e004dCb6832E05DE9c',
+          tokenAddress: '0xe5d2f645f20938470cb50f3736e010042b69c77a',
+        },
+      ]);
+    } catch (error) {
+      console.log(error);
+    }
+
+    console.log(result);
   };
+
+  // const param:any= (({ type: ERC721TokenType; tokenId: string; tokenAddress: string; } & { toAddress: string; }) | ({ type: ETHTokenType; } & { amount: string; } & { toAddress: string; }) | ({ ...; } & ... 1 more ... & { ...; }))[]
 
   //question: how is marketplace connected with metamask
   //how is getting the signer for transaction
