@@ -1,87 +1,93 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-import { Link } from '@imtbl/imx-sdk';
-import { useClient } from '../hooks/useClient';
 import {
+  CreateCollectionParams,
+  CreateProjectParams,
+  ImmutableXClient,
+  Link,
+} from '@imtbl/imx-sdk';
+import {
+  IMX_CONTRACT_ADDRESS,
   NEXT_APP_SANDBOX_ENV_URL,
   NEXT_APP_SANDBOX_LINK_URL,
   SANDBOX_REGISTRATION_ADDRESS,
   SANDBOX_STARK_CONTRACT_ADDRESS,
 } from '../config';
 import { configureProvider } from '../helper/configureProvider';
-import { Config, ImmutableX } from '@imtbl/core-sdk';
-interface UserInterface {
-  address: string;
-  starkPublicKey: string;
-  ethNetwork: string;
-  providerPreference: string;
-}
+import { getSigner } from '../helper/getSigner';
+import { ethers, Signer } from 'ethers';
+import Nft from '../../artifacts/contracts/NftContract.sol/NftContract.json';
+import CreateProject from '../components/CreateProject';
+import { ContractCreationProps } from '../interface/ContractCreationProps';
+import ListProjects from '../components/ListProjects';
 
 const Home: NextPage = () => {
-  const [user, setUser] = useState<UserInterface>(Object);
-  const [assets, setAssets] = useState(Array);
-  const [sellOrders, setSellOrders] = useState(Array);
-  const [orderCursor, setOrderCursor] = useState('');
-  const [collectionCursor, setCollectionCursor] = useState('');
-  const [collections, setCollections] = useState(Array);
-  const [client, setClient] = useState<ImmutableX>(Object);
-  const [balance, setBalance] = useState('');
+  const [nftContractInfo, setNftContractInfo] =
+    useState<ContractCreationProps>(Object);
+  const [deployedAddress, setDeployedAddress] = useState('');
+  const [projectParams, setProjectParams] =
+    useState<CreateProjectParams>(Object);
+  const [collectionParams, setCollectionParams] =
+    useState<CreateCollectionParams>(Object);
+  const [client, setClient] = useState<ImmutableXClient>(Object);
+  const [signer, setSigner] = useState<Signer>(Object);
   const [projects, setProjects] = useState(Array);
 
-  const createClient = async () => {
-    const config = Config.SANDBOX;
-    console.log(config);
-    const client = new ImmutableX(config);
-    console.log(client);
-    setClient(client);
+  const link = new Link(NEXT_APP_SANDBOX_LINK_URL);
+
+  const linkSetup = async () => {
+    const res = await link.setup({});
   };
 
-  const getAllCollection = async () => {};
+  const setupClient = async () => {};
 
-  const getSellOrders = async () => {};
+  const deployContract = async () => {
+    const { name, symbol } = nftContractInfo;
+    if (!name || !symbol) {
+      return;
+    }
 
-  const getUserAssets = async () => {
-    const response = await client.listAssets({
-      user: '0x8aE41d03aac4f8D0f8eda73273B0dCFe40306f34',
-    });
-    console.log(response);
-    setAssets(response.result);
+    const signer = await getSigner();
+    const signerAddress = await signer.getAddress();
+    const nftContact = new ethers.ContractFactory(
+      Nft.abi,
+      Nft.bytecode,
+      signer
+    );
+
+    const deployedNft = await nftContact.deploy(
+      name,
+      symbol,
+      signerAddress,
+      IMX_CONTRACT_ADDRESS
+    );
+    await deployedNft.deployTransaction.wait();
+    setNftContractInfo({ name: '', symbol: '' });
+    console.log(deployedNft.address);
+    setDeployedAddress(deployedNft.address);
   };
-
-  const getBalance = async () => {
-    const tempBalance = await client.getBalance({
-      address: 'eth',
-      owner: '0x8aE41d03aac4f8D0f8eda73273B0dCFe40306f34',
-    });
-    console.log(tempBalance);
-    setBalance(tempBalance.balance);
-  };
-
-  const getProjects = async () => {
-    const provider = await configureProvider();
-    const signer = provider.getSigner();
-    const result = await client.getProjects(signer);
-    setProjects(result.result);
-    console.log(result);
-  };
-
-  const getCollectionInfo = async () => {};
-
-  const mintNFTV2 = async () => {};
-
-  const clearData = () => {
-    setAssets([]);
-    setCollectionCursor('');
-    setCollections([]);
-    setOrderCursor('');
-    setSellOrders([]);
-  };
-
-  const transferAsset = async () => {};
 
   useEffect(() => {
-    createClient();
+    const init = async () => {
+      const provider = await configureProvider();
+      const signer = provider.getSigner();
+      setSigner(signer);
+      const adminClient = await ImmutableXClient.build({
+        publicApiUrl: NEXT_APP_SANDBOX_ENV_URL,
+        registrationContractAddress: SANDBOX_REGISTRATION_ADDRESS,
+        starkContractAddress: SANDBOX_STARK_CONTRACT_ADDRESS,
+        signer: signer,
+      });
+      const res = await adminClient.getProjects();
+      console.log(res);
+      setProjects(res.result);
+    };
+    try {
+      init();
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
 
   return (
@@ -92,89 +98,13 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="h-full">
-        <div className="flex justify-between">
-          <button
-            className="border-4 p-2 bg-blue-600 rounded-lg"
-            onClick={getBalance}
-          >
-            Get Balance
-          </button>
-          <button
-            className="border-4 p-2 bg-blue-600 rounded-lg"
-            onClick={getSellOrders}
-          >
-            Get Orders
-          </button>
-          <button
-            className="border-4 p-2 bg-blue-600 rounded-lg"
-            onClick={getAllCollection}
-          >
-            Get Collections
-          </button>
-          <button
-            className="border-4 p-2 bg-blue-600 rounded-lg"
-            onClick={getProjects}
-          >
-            Get Projects
-          </button>
-          <button
-            className="border-4 p-2 bg-green-600 rounded-lg"
-            onClick={getCollectionInfo}
-          >
-            Get Collection
-          </button>
-          <button
-            className="border-4 p-2 bg-green-600 rounded-lg"
-            onClick={transferAsset}
-          >
-            Transfer
-          </button>
-          <button
-            className="border-4 p-2 bg-yellow-600 rounded-lg"
-            onClick={mintNFTV2}
-          >
-            Mint
-          </button>
-          <button
-            className="border-4 p-2 bg-blue-600 rounded-lg"
-            onClick={getUserAssets}
-          >
-            Get Assets
-          </button>
-        </div>
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={clearData}
-            className="border-4 p-2 bg-red-600 rounded-lg"
-          >
-            clear
-          </button>
-        </div>
+        <CreateProject
+          projectParams={projectParams}
+          setProjectParams={setProjectParams}
+        />
+        <ListProjects projectList={projects} />
         <div className="flex flex-col justify-center items-center border-teal-600 p-2 m-4">
-          <p className="">{orderCursor}</p>
-          <p>{balance}</p>
-          <div>
-            {projects?.map((project: any) => (
-              <p className="">{JSON.stringify(project, null, 2)}</p>
-            ))}
-          </div>
-          <p className="">{collectionCursor}</p>
-          <p className="">{JSON.stringify(user, null, 2)}</p>
-          <div>
-            {assets?.map((asset: any) => (
-              <p className="">{JSON.stringify(asset, null, 2)}</p>
-            ))}
-          </div>
-          <div>
-            {collections?.map((collection: any) => (
-              <p className="">{JSON.stringify(collection, null, 2)}</p>
-            ))}
-          </div>
-          <div>
-            {sellOrders?.map((order: any) => (
-              <p className="">{JSON.stringify(order, null, 2)}</p>
-            ))}
-          </div>
+          <label>Contract deployed on: </label> <p>{deployedAddress}</p>
         </div>
       </main>
     </div>
