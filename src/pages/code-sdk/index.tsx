@@ -2,12 +2,8 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { Link } from '@imtbl/imx-sdk';
-import { useClient } from '../../hooks/useClient';
 import {
-  NEXT_APP_SANDBOX_ENV_URL,
   NEXT_APP_SANDBOX_LINK_URL,
-  SANDBOX_REGISTRATION_ADDRESS,
-  SANDBOX_STARK_CONTRACT_ADDRESS,
 } from '../../config';
 import { configureProvider } from '../../helper/configureProvider';
 import {

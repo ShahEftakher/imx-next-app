@@ -98,7 +98,8 @@ const Home: NextPage = () => {
             tokens: [
               {
                 id: '5',
-                blueprint: 'https://gateway.pinata.cloud/ipfs/QmSLkeGyDuJgQeps5mLuVyaeMac4AM7hKR2GLCqSzuNiay',
+                blueprint:
+                  'https://gateway.pinata.cloud/ipfs/QmSLkeGyDuJgQeps5mLuVyaeMac4AM7hKR2GLCqSzuNiay',
               },
             ],
           },
