@@ -14,7 +14,6 @@ import {
   SANDBOX_REGISTRATION_ADDRESS,
   SANDBOX_STARK_CONTRACT_ADDRESS,
 } from '../config';
-import { configureProvider } from '../helper/configureProvider';
 import { getSigner } from '../helper/getSigner';
 import { ethers, Signer } from 'ethers';
 import Nft from '../../artifacts/contracts/NftContract.sol/NftContract.json';
@@ -47,7 +46,6 @@ const Home: NextPage = () => {
     if (!name || !symbol) {
       return;
     }
-
     const signer = await getSigner();
     const signerAddress = await signer.getAddress();
     const nftContact = new ethers.ContractFactory(
@@ -55,7 +53,6 @@ const Home: NextPage = () => {
       Nft.bytecode,
       signer
     );
-
     const deployedNft = await nftContact.deploy(
       name,
       symbol,
@@ -70,8 +67,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     const init = async () => {
-      const provider = await configureProvider();
-      const signer = provider.getSigner();
+      const signer = await getSigner();
       setSigner(signer);
       const adminClient = await ImmutableXClient.build({
         publicApiUrl: NEXT_APP_SANDBOX_ENV_URL,
