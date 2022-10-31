@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  label {
+    display: inline-block;
+    width: 150px;
+    text-align: left;
+    margin-right: 10px;
+    margin-bottom: 12px;
+  }
+}
