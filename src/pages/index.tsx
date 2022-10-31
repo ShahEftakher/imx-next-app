@@ -3,16 +3,22 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { ImmutableXClient, Link } from '@imtbl/imx-sdk';
 import { NEXT_APP_SANDBOX_LINK_URL } from '../config';
-import { Signer } from 'ethers';
 import CreateProject from '../components/CreateProject';
 import { useadminClient } from '../hooks/useAdminClient';
 import DeployContract from '../components/DeployContract';
+import CreateCollection from '../components/CreateCollection';
+
+enum FORMSTATE {
+  createCollection = 'CreateCollection',
+  createProject = 'CreateProject',
+  deployContract = 'DeployContract',
+}
 
 const Home: NextPage = () => {
-  const [client, setClient] = useState<ImmutableXClient>(Object);
-  const [signer, setSigner] = useState<Signer>(Object);
-  const [projects, setProjects] = useState(Array);
   const adminClient: ImmutableXClient | undefined = useadminClient();
+  const [formState, setFormState] = useState<FORMSTATE>(
+    FORMSTATE.deployContract
+  );
 
   const link = new Link(NEXT_APP_SANDBOX_LINK_URL);
 
@@ -20,20 +26,26 @@ const Home: NextPage = () => {
     const res = await link.setup({});
   };
 
-  const setupClient = async () => {};
+  const nextFormState = () => {
+    const options = Object.values(FORMSTATE);
+    let currentIndex = options.indexOf(formState);
+    console.log(options);
+    console.log(options.indexOf(formState));
+    if (currentIndex < options.length - 1)
+      setFormState(options[currentIndex + 1]);
+  };
 
-  const getProjects = async () => {
-    if (adminClient) {
-      const res = await adminClient.getProjects();
-      console.log(res);
-      setProjects(res.result);
-    }
+  const previousFormState = () => {
+    const options = Object.values(FORMSTATE);
+    let currentIndex = options.indexOf(formState);
+    console.log(options);
+    console.log(options.indexOf(formState));
+    if (currentIndex > 0) setFormState(options[currentIndex - 1]);
   };
 
   useEffect(() => {
     if (adminClient) {
       console.log(adminClient);
-      // getProjects();
     }
   }, [adminClient]);
 
@@ -45,9 +57,29 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="h-full">
-        <CreateProject />
-        <DeployContract />
-       
+        <div className="absolute top-1/4 left-1/2">
+          <div className="relative -left-1/2 p-4 ">
+            <div className="flex justify-center">
+              <button onClick={previousFormState} className="mr-8">
+                Previous
+              </button>
+              <div className="border border-teal-600 rounded p-2">
+                {formState === FORMSTATE.deployContract ? (
+                  <DeployContract />
+                ) : formState === FORMSTATE.createProject ? (
+                  <CreateProject adminClient={adminClient} />
+                ) : formState === FORMSTATE.createCollection ? (
+                  <CreateCollection adminClient={adminClient} />
+                ) : (
+                  ''
+                )}
+              </div>
+              <button onClick={nextFormState} className="ml-8">
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   );
