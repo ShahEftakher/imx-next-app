@@ -1,31 +1,10 @@
 import { CreateCollectionParams } from '@imtbl/imx-sdk';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 
-interface CreateCollectionProps {
-  collectionParams: CreateCollectionParams;
-  setCollectionParams: Dispatch<
-    SetStateAction<
-      {
-        name: string;
-        contract_address: string;
-        owner_public_key: string;
-        project_id: number;
-      } & {
-        metadata_api_url?: string | undefined;
-        description?: string | undefined;
-        icon_url?: string | undefined;
-        collection_image_url?: string | undefined;
-      }
-    >
-  >;
-  createCollection: () => {};
-}
-
-const CreateCollection = ({
-  collectionParams,
-  setCollectionParams,
-  createCollection,
-}: CreateCollectionProps) => {
+const CreateCollection = () => {
+  const [collectionParams, setCollectionParams] =
+    useState<CreateCollectionParams>(Object);
+  const createCollection = () => {};
   return (
     <div>
       <div className="flex justify-between items-center mt-4">

@@ -1,17 +1,40 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { ContractCreationProps } from '../interface/ContractCreationProps';
+import { getSigner } from '../helper/getSigner';
+import { ethers } from 'ethers';
+import Nft from '../../artifacts/contracts/NftContract.sol/NftContract.json';
+import { IMX_CONTRACT_ADDRESS } from '../config';
 
 interface DeployProps {
-  nftContractInfo: ContractCreationProps;
-  setNftContractInfo: Dispatch<SetStateAction<ContractCreationProps>>;
-  deployContract: () => {};
+  setDeployedAddress: Dispatch<SetStateAction<string>>;
 }
 
-const DeployContract = ({
-  nftContractInfo,
-  setNftContractInfo,
-  deployContract,
-}: DeployProps) => {
+const DeployContract = ({ setDeployedAddress }: DeployProps) => {
+  const [nftContractInfo, setNftContractInfo] =
+    useState<ContractCreationProps>(Object);
+  const deployContract = async () => {
+    const { name, symbol } = nftContractInfo;
+    if (!name || !symbol) {
+      return;
+    }
+    const signer = await getSigner();
+    const signerAddress = await signer.getAddress();
+    const nftContact = new ethers.ContractFactory(
+      Nft.abi,
+      Nft.bytecode,
+      signer
+    );
+    const deployedNft = await nftContact.deploy(
+      name,
+      symbol,
+      signerAddress,
+      IMX_CONTRACT_ADDRESS
+    );
+    await deployedNft.deployTransaction.wait();
+    setNftContractInfo({ name: '', symbol: '' });
+    console.log(deployedNft.address);
+    setDeployedAddress(deployedNft.address);
+  };
   return (
     <div>
       <div className="flex justify-between items-center mt-4">

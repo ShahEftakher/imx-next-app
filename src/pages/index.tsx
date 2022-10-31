@@ -1,29 +1,14 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-import {
-  CreateCollectionParams,
-  CreateProjectParams,
-  ImmutableXClient,
-  Link,
-} from '@imtbl/imx-sdk';
-import { IMX_CONTRACT_ADDRESS, NEXT_APP_SANDBOX_LINK_URL } from '../config';
-import { getSigner } from '../helper/getSigner';
-import { ethers, Signer } from 'ethers';
-import Nft from '../../artifacts/contracts/NftContract.sol/NftContract.json';
+import { ImmutableXClient, Link } from '@imtbl/imx-sdk';
+import { NEXT_APP_SANDBOX_LINK_URL } from '../config';
+import { Signer } from 'ethers';
 import CreateProject from '../components/CreateProject';
-import { ContractCreationProps } from '../interface/ContractCreationProps';
-import ListProjects from '../components/ListProjects';
 import { useadminClient } from '../hooks/useAdminClient';
 
 const Home: NextPage = () => {
-  const [nftContractInfo, setNftContractInfo] =
-    useState<ContractCreationProps>(Object);
   const [deployedAddress, setDeployedAddress] = useState('');
-  const [projectParams, setProjectParams] =
-    useState<CreateProjectParams>(Object);
-  const [collectionParams, setCollectionParams] =
-    useState<CreateCollectionParams>(Object);
   const [client, setClient] = useState<ImmutableXClient>(Object);
   const [signer, setSigner] = useState<Signer>(Object);
   const [projects, setProjects] = useState(Array);
@@ -36,30 +21,6 @@ const Home: NextPage = () => {
   };
 
   const setupClient = async () => {};
-
-  const deployContract = async () => {
-    const { name, symbol } = nftContractInfo;
-    if (!name || !symbol) {
-      return;
-    }
-    const signer = await getSigner();
-    const signerAddress = await signer.getAddress();
-    const nftContact = new ethers.ContractFactory(
-      Nft.abi,
-      Nft.bytecode,
-      signer
-    );
-    const deployedNft = await nftContact.deploy(
-      name,
-      symbol,
-      signerAddress,
-      IMX_CONTRACT_ADDRESS
-    );
-    await deployedNft.deployTransaction.wait();
-    setNftContractInfo({ name: '', symbol: '' });
-    console.log(deployedNft.address);
-    setDeployedAddress(deployedNft.address);
-  };
 
   const getProjects = async () => {
     if (adminClient) {
@@ -84,10 +45,8 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="h-full">
-        <CreateProject
-          projectParams={projectParams}
-          setProjectParams={setProjectParams}
-        />
+        <CreateProject />
+
         <div className="flex flex-col justify-center items-center border-teal-600 p-2 m-4">
           <label>Contract deployed on: </label> <p>{deployedAddress}</p>
         </div>

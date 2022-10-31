@@ -1,5 +1,5 @@
 import { CreateProjectParams } from '@imtbl/imx-sdk';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 
 interface CreateProjectProps {
   projectParams: CreateProjectParams;
@@ -12,10 +12,9 @@ interface CreateProjectProps {
   >;
 }
 
-const CreateProject = ({
-  projectParams,
-  setProjectParams,
-}: CreateProjectProps) => {
+const CreateProject = () => {
+  const [projectParams, setProjectParams] =
+    useState<CreateProjectParams>(Object);
   const createproject = () => {};
   return (
     <div>
