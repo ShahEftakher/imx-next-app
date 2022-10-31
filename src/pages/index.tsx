@@ -7,19 +7,14 @@ import {
   ImmutableXClient,
   Link,
 } from '@imtbl/imx-sdk';
-import {
-  IMX_CONTRACT_ADDRESS,
-  NEXT_APP_SANDBOX_ENV_URL,
-  NEXT_APP_SANDBOX_LINK_URL,
-  SANDBOX_REGISTRATION_ADDRESS,
-  SANDBOX_STARK_CONTRACT_ADDRESS,
-} from '../config';
+import { IMX_CONTRACT_ADDRESS, NEXT_APP_SANDBOX_LINK_URL } from '../config';
 import { getSigner } from '../helper/getSigner';
 import { ethers, Signer } from 'ethers';
 import Nft from '../../artifacts/contracts/NftContract.sol/NftContract.json';
 import CreateProject from '../components/CreateProject';
 import { ContractCreationProps } from '../interface/ContractCreationProps';
 import ListProjects from '../components/ListProjects';
+import { useadminClient } from '../hooks/useAdminClient';
 
 const Home: NextPage = () => {
   const [nftContractInfo, setNftContractInfo] =
@@ -32,6 +27,7 @@ const Home: NextPage = () => {
   const [client, setClient] = useState<ImmutableXClient>(Object);
   const [signer, setSigner] = useState<Signer>(Object);
   const [projects, setProjects] = useState(Array);
+  const adminClient: ImmutableXClient | undefined = useadminClient();
 
   const link = new Link(NEXT_APP_SANDBOX_LINK_URL);
 
@@ -65,26 +61,20 @@ const Home: NextPage = () => {
     setDeployedAddress(deployedNft.address);
   };
 
-  useEffect(() => {
-    const init = async () => {
-      const signer = await getSigner();
-      setSigner(signer);
-      const adminClient = await ImmutableXClient.build({
-        publicApiUrl: NEXT_APP_SANDBOX_ENV_URL,
-        registrationContractAddress: SANDBOX_REGISTRATION_ADDRESS,
-        starkContractAddress: SANDBOX_STARK_CONTRACT_ADDRESS,
-        signer: signer,
-      });
+  const getProjects = async () => {
+    if (adminClient) {
       const res = await adminClient.getProjects();
       console.log(res);
       setProjects(res.result);
-    };
-    try {
-      init();
-    } catch (error) {
-      console.log(error);
     }
-  }, []);
+  };
+
+  useEffect(() => {
+    if (adminClient) {
+      console.log(adminClient);
+      // getProjects();
+    }
+  }, [adminClient]);
 
   return (
     <div className="h-screen">
