@@ -5,13 +5,11 @@ import { ethers } from 'ethers';
 import Nft from '../../artifacts/contracts/NftContract.sol/NftContract.json';
 import { IMX_CONTRACT_ADDRESS } from '../config';
 
-interface DeployProps {
-  setDeployedAddress: Dispatch<SetStateAction<string>>;
-}
-
-const DeployContract = ({ setDeployedAddress }: DeployProps) => {
+const DeployContract = () => {
   const [nftContractInfo, setNftContractInfo] =
     useState<ContractCreationProps>(Object);
+  const [deployedAddress, setDeployedAddress] = useState('');
+
   const deployContract = async () => {
     const { name, symbol } = nftContractInfo;
     if (!name || !symbol) {
@@ -72,6 +70,9 @@ const DeployContract = ({ setDeployedAddress }: DeployProps) => {
         >
           Deploy Contract
         </button>
+      </div>
+      <div className="flex flex-col justify-center items-center border-teal-600 p-2 m-4">
+        <label>Contract deployed on: </label> <p>{deployedAddress}</p>
       </div>
     </div>
   );

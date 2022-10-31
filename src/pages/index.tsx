@@ -6,9 +6,9 @@ import { NEXT_APP_SANDBOX_LINK_URL } from '../config';
 import { Signer } from 'ethers';
 import CreateProject from '../components/CreateProject';
 import { useadminClient } from '../hooks/useAdminClient';
+import DeployContract from '../components/DeployContract';
 
 const Home: NextPage = () => {
-  const [deployedAddress, setDeployedAddress] = useState('');
   const [client, setClient] = useState<ImmutableXClient>(Object);
   const [signer, setSigner] = useState<Signer>(Object);
   const [projects, setProjects] = useState(Array);
@@ -46,10 +46,8 @@ const Home: NextPage = () => {
       </Head>
       <main className="h-full">
         <CreateProject />
-
-        <div className="flex flex-col justify-center items-center border-teal-600 p-2 m-4">
-          <label>Contract deployed on: </label> <p>{deployedAddress}</p>
-        </div>
+        <DeployContract />
+       
       </main>
     </div>
   );
