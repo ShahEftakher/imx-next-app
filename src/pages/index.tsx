@@ -88,7 +88,6 @@ const Home: NextPage = () => {
           projectParams={projectParams}
           setProjectParams={setProjectParams}
         />
-        <ListProjects projectList={projects} />
         <div className="flex flex-col justify-center items-center border-teal-600 p-2 m-4">
           <label>Contract deployed on: </label> <p>{deployedAddress}</p>
         </div>
