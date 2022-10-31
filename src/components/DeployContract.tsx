@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { useState } from 'react';
 import { ContractCreationProps } from '../interface/ContractCreationProps';
 import { getSigner } from '../helper/getSigner';
 import { ethers } from 'ethers';
@@ -35,7 +35,7 @@ const DeployContract = () => {
   };
   return (
     <div>
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex flex-col justify-center items-center mt-4">
         <div>
           <label>Contract Name: </label>
           <input
