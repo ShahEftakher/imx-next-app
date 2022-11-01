@@ -11,13 +11,32 @@ Most probably the collections on the IMX and the listings. Nothing else...
 So I solved the issue of signer. I can get signer from metamask but that would require me to connect metamask to the 
 front end client. Without connecting to the frontend client with metamask it's not possible.
 
-issue:
-- Will it be user friendly to connect their metamask wallet
-- might be, only when minting or doing any admin op only then the connect, but once they connect they need to connect for the entirity of use
-- 
 
 So Core-sdk does not have Link to link to the starkex network
 The Client in Core-sdk is different
 It creates client from pre-defined configs
 To avail admin privilage the client in imx-sdk needed to be initialized with a signer but in case of core-sdk api call with ethSigner is required for admin privilage
 and the api-call must be signed
+
+
+----------------------------------------------------------------------------------------------
+
+Core-sdk and imx-sdk has major changes
+- No link support for core-sdk
+- Core-sdk needs stark signer
+- To create stark signer need stark private key
+- Now there is no way of creating a stark signer for existing IMX user(existing account created against ethereum public key)
+    - Work aorund can be associate a new stark key with the user
+    - But then won't possible to trade the existing resources on the IMX layer
+<!-- - Client in core-sdk does not require signer -->
+- But all api call requires signer
+
+
+-----------------------------------------------------------------------------------------------
+
+APIs not developer friendly if considering to create a usable client for general users
+- Public key issue: requires uncompressed public key that can be generated from private key
+    - requires private key
+    - asking users for their private key is not acceptable
+    - suitable for server side usage
+    - 
