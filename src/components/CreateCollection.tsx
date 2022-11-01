@@ -1,5 +1,5 @@
 import { CreateCollectionParams, ImmutableXClient, sign } from '@imtbl/imx-sdk';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { useState } from 'react';
 import { getSigner } from '../helper/getSigner';
 
 interface CreateCollectionProps {
