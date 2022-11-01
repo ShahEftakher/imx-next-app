@@ -10,4 +10,8 @@
     margin-right: 10px;
     margin-bottom: 12px;
   }
+
+  .h-screen-1\/2 {
+    height: 50vh;
+  }
 }
