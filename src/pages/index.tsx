@@ -1,8 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-import { ImmutableXClient, Link } from '@imtbl/imx-sdk';
-import { NEXT_APP_SANDBOX_LINK_URL } from '../config';
+import { ImmutableXClient } from '@imtbl/imx-sdk';
 import CreateProject from '../components/CreateProject';
 import { useadminClient } from '../hooks/useAdminClient';
 import DeployContract from '../components/DeployContract';
@@ -19,12 +18,6 @@ const Home: NextPage = () => {
   const [formState, setFormState] = useState<FORMSTATE>(
     FORMSTATE.deployContract
   );
-
-  const link = new Link(NEXT_APP_SANDBOX_LINK_URL);
-
-  const linkSetup = async () => {
-    const res = await link.setup({});
-  };
 
   const nextFormState = () => {
     const options = Object.values(FORMSTATE);
