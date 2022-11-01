@@ -1,5 +1,6 @@
 import { CreateCollectionParams, ImmutableXClient, sign } from '@imtbl/imx-sdk';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { StateContext } from '../context/context';
 import { getSigner } from '../helper/getSigner';
 
 interface CreateCollectionProps {
@@ -10,12 +11,14 @@ const CreateCollection = ({ adminClient }: CreateCollectionProps) => {
   const [collectionParams, setCollectionParams] =
     useState<CreateCollectionParams>(Object);
 
+  const { deployedAddress } = useContext(StateContext);
+
   const createCollection = async () => {
     if (!adminClient) {
       return;
     }
     const signer = await getSigner();
-    const signerAddress = await signer.getAddress();
+    const signerAddress = (await signer.getAddress()).toLowerCase();
     setCollectionParams((preState) => ({
       ...preState,
       owner_public_key: signerAddress,
@@ -29,6 +32,7 @@ const CreateCollection = ({ adminClient }: CreateCollectionProps) => {
       return;
     }
     try {
+      console.log(collectionParams);
       const res = await adminClient.createCollection(collectionParams);
       console.log(res);
     } catch (error) {
@@ -103,11 +107,14 @@ const CreateCollection = ({ adminClient }: CreateCollectionProps) => {
             onChange={(event) => {
               setCollectionParams((preState: any) => ({
                 ...preState,
-                project_id: event.target.value,
+                project_id: Number(event.target.value),
               }));
             }}
           />
         </div>
+      </div>
+      <div className="flex flex-col justify-center items-center border-teal-600 p-2 m-4">
+        <label>Contract deployed on: </label> <p>{deployedAddress}</p>
       </div>
       <div className="flex justify-center mt-3">
         <button
