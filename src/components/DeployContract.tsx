@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { ContractCreationProps } from '../interface/ContractCreationProps';
 import { getSigner } from '../helper/getSigner';
 import { ethers } from 'ethers';
 import Nft from '../../artifacts/contracts/NftContract.sol/NftContract.json';
 import { IMX_CONTRACT_ADDRESS } from '../config';
+import { StateContext } from '../context/context';
 
 const DeployContract = () => {
   const [nftContractInfo, setNftContractInfo] =
     useState<ContractCreationProps>(Object);
-  const [deployedAddress, setDeployedAddress] = useState('');
-
+  const { deployedAddress, setDeployedAddress } = useContext(StateContext);
   const deployContract = async () => {
     const { name, symbol } = nftContractInfo;
     if (!name || !symbol) {
@@ -65,13 +65,13 @@ const DeployContract = () => {
           />
         </div>
         <button
-          className="border-4 p-2 bg-cyan-600 rounded-lg"
+          className="border-4 p-2 bg-cyan-600 rounded-lg mt-4"
           onClick={deployContract}
         >
           Deploy Contract
         </button>
       </div>
-      <div className="flex flex-col justify-center items-center border-teal-600 p-2 m-4">
+      <div className="flex flex-col justify-center items-center border-teal-600 p-2 mt-3">
         <label>Contract deployed on: </label> <p>{deployedAddress}</p>
       </div>
     </div>
