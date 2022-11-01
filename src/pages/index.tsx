@@ -9,8 +9,8 @@ import CreateCollection from '../components/CreateCollection';
 
 enum FORMSTATE {
   createProject = 'CreateProject',
-  createCollection = 'CreateCollection',
   deployContract = 'DeployContract',
+  createCollection = 'CreateCollection',
 }
 
 const Home: NextPage = () => {
@@ -48,7 +48,7 @@ const Home: NextPage = () => {
       <main className="h-full">
         <div className="absolute top-1/4 left-1/2">
           <div className="relative -left-1/2 p-4 ">
-            <div className="flex justify-center items-center">
+            <div className="h-screen-1/2 flex justify-center items-center">
               <div className="mr-8">
                 <button
                   className="bg-teal-700 rounded p-2"
