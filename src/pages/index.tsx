@@ -8,31 +8,27 @@ import DeployContract from '../components/DeployContract';
 import CreateCollection from '../components/CreateCollection';
 
 enum FORMSTATE {
-  createCollection = 'CreateCollection',
   createProject = 'CreateProject',
+  createCollection = 'CreateCollection',
   deployContract = 'DeployContract',
 }
 
 const Home: NextPage = () => {
   const adminClient: ImmutableXClient | undefined = useadminClient();
   const [formState, setFormState] = useState<FORMSTATE>(
-    FORMSTATE.deployContract
+    FORMSTATE.createProject
   );
 
   const nextFormState = () => {
     const options = Object.values(FORMSTATE);
-    let currentIndex = options.indexOf(formState);
-    console.log(options);
-    console.log(options.indexOf(formState));
+    const currentIndex = options.indexOf(formState);
     if (currentIndex < options.length - 1)
       setFormState(options[currentIndex + 1]);
   };
 
   const previousFormState = () => {
     const options = Object.values(FORMSTATE);
-    let currentIndex = options.indexOf(formState);
-    console.log(options);
-    console.log(options.indexOf(formState));
+    const currentIndex = options.indexOf(formState);
     if (currentIndex > 0) setFormState(options[currentIndex - 1]);
   };
 
@@ -52,10 +48,15 @@ const Home: NextPage = () => {
       <main className="h-full">
         <div className="absolute top-1/4 left-1/2">
           <div className="relative -left-1/2 p-4 ">
-            <div className="flex justify-center">
-              <button onClick={previousFormState} className="mr-8">
-                Previous
-              </button>
+            <div className="flex justify-center items-center">
+              <div className="mr-8">
+                <button
+                  className="bg-teal-700 rounded p-2"
+                  onClick={previousFormState}
+                >
+                  Previous
+                </button>
+              </div>
               <div className="border border-teal-600 rounded p-2">
                 {formState === FORMSTATE.deployContract ? (
                   <DeployContract />
@@ -67,9 +68,14 @@ const Home: NextPage = () => {
                   ''
                 )}
               </div>
-              <button onClick={nextFormState} className="ml-8">
-                Next
-              </button>
+              <div className="ml-8">
+                <button
+                  className="bg-teal-700 rounded p-2"
+                  onClick={nextFormState}
+                >
+                  Next
+                </button>
+              </div>
             </div>
           </div>
         </div>
