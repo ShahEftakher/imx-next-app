@@ -13,8 +13,8 @@ library Minting {
         returns (uint256, bytes memory)
     {
         int256 index = Bytes.indexOf(blob, ":", 0);
-        require(index >= 0, "Separator Must Exist");
-        //Trim the { and } from the parameters
+        require(index >= 0, "Separator must exist");
+        // Trim the { and } from the parameters
         uint256 tokenID = Bytes.toUint(blob[1:uint256(index) - 1]);
         uint256 blueprintLength = blob.length - uint256(index) - 3;
         if (blueprintLength == 0) {
