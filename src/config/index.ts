@@ -8,4 +8,4 @@ export const SANDBOX_REGISTRATION_ADDRESS =
 export const ALCHEMY_API_ENDPOINT =
   'https://eth-goerli.g.alchemy.com/v2/J4S5_1fIPVh7G_RVMdl75DxL4uDwes7j';
 export const IMX_CONTRACT_ADDRESS =
-  '0xBaf58F61c294e40ebA44DE60e2Aed98B56D27116';
+  '0x7917eDb51ecD6CdB3F9854c3cc593F33de10c623';
