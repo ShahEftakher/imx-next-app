@@ -4,7 +4,7 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./imx-mintable/Mintable.sol";
 
-contract NftContract is ERC721, Mintable {
+contract Asset is ERC721, Mintable {
     constructor(
         string memory _name,
         string memory _symbol,
