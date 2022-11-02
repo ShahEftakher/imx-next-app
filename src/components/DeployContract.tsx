@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { ContractCreationProps } from '../interface/ContractCreationProps';
 import { getSigner } from '../helper/getSigner';
 import { ethers } from 'ethers';
-import Nft from '../../artifacts/contracts/NftContract.sol/NftContract.json';
+import Nft from '../../artifacts/contracts/Asset.sol/Asset.json';
 import { IMX_CONTRACT_ADDRESS } from '../config';
 import { StateContext } from '../context/context';
 
@@ -22,16 +22,21 @@ const DeployContract = () => {
       Nft.bytecode,
       signer
     );
-    const deployedNft = await nftContact.deploy(
-      name,
-      symbol,
-      signerAddress,
-      IMX_CONTRACT_ADDRESS
-    );
-    await deployedNft.deployTransaction.wait();
-    setNftContractInfo({ name: '', symbol: '' });
-    console.log(deployedNft.address);
-    setDeployedAddress(deployedNft.address);
+
+    try {
+      const deployedNft = await nftContact.deploy(
+        name,
+        symbol,
+        signerAddress,
+        IMX_CONTRACT_ADDRESS
+      );
+      await deployedNft.deployTransaction.wait();
+      setNftContractInfo({ name: '', symbol: '' });
+      console.log(deployedNft.address);
+      setDeployedAddress(deployedNft.address);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div>
