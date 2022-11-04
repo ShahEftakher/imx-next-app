@@ -43,3 +43,7 @@ Minting:
 
 - Mismatch with mintFor in the smart contract of the collection can result into mint failure at the very end
 - IDK this is very tiresome :(
+
+
+No standard workflow for minting nft/creating a collection
+The process mentioned in tutorial is not optimal to be used on a client sided application

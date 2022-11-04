@@ -144,7 +144,6 @@ const Home: NextPage = () => {
     console.log(result);
   };
 
-  // const param:any= (({ type: ERC721TokenType; tokenId: string; tokenAddress: string; } & { toAddress: string; }) | ({ type: ETHTokenType; } & { amount: string; } & { toAddress: string; }) | ({ ...; } & ... 1 more ... & { ...; }))[]
 
   //question: how is marketplace connected with metamask
   //how is getting the signer for transaction
