@@ -6,11 +6,13 @@ import CreateProject from '../components/CreateProject';
 import { useadminClient } from '../hooks/useAdminClient';
 import DeployContract from '../components/DeployContract';
 import CreateCollection from '../components/CreateCollection';
+import MintNft from '../components/MintNft';
 
 enum FORMSTATE {
   createProject = 'CreateProject',
   deployContract = 'DeployContract',
   createCollection = 'CreateCollection',
+  minCollection = 'MintCollection',
 }
 
 const Home: NextPage = () => {
@@ -64,6 +66,8 @@ const Home: NextPage = () => {
                   <CreateProject adminClient={adminClient} />
                 ) : formState === FORMSTATE.createCollection ? (
                   <CreateCollection adminClient={adminClient} />
+                ) : formState === FORMSTATE.minCollection ? (
+                  <MintNft adminClient={adminClient} />
                 ) : (
                   ''
                 )}
