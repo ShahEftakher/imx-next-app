@@ -7,11 +7,13 @@ import { useadminClient } from '../hooks/useAdminClient';
 import DeployContract from '../components/DeployContract';
 import CreateCollection from '../components/CreateCollection';
 import MintNft from '../components/MintNft';
+import AddMetaDataSchema from '../components/AddMetaDataSchema';
 
 enum FORMSTATE {
   createProject = 'CreateProject',
   deployContract = 'DeployContract',
   createCollection = 'CreateCollection',
+  addMetaDataSchema = 'AddMetadataSchema',
   minCollection = 'MintCollection',
 }
 
@@ -66,6 +68,8 @@ const Home: NextPage = () => {
                   <CreateProject adminClient={adminClient} />
                 ) : formState === FORMSTATE.createCollection ? (
                   <CreateCollection adminClient={adminClient} />
+                ) : formState === FORMSTATE.addMetaDataSchema ? (
+                  <AddMetaDataSchema adminClient={adminClient} />
                 ) : formState === FORMSTATE.minCollection ? (
                   <MintNft adminClient={adminClient} />
                 ) : (
