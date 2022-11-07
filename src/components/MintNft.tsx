@@ -2,18 +2,18 @@ import { ImmutableMethodParams, ImmutableXClient, sign } from '@imtbl/imx-sdk';
 import React, { useContext, useState } from 'react';
 import { StateContext } from '../context/context';
 import { getSigner } from '../helper/getSigner';
+import { AdminClientProps } from '../interface/AdminClientProps';
 
-interface CreateCollectionProps {
-  adminClient: ImmutableXClient | undefined;
-}
-
-const MintNft = ({ adminClient }: CreateCollectionProps) => {
+const MintNft = ({ adminClient }: AdminClientProps) => {
   const [number, setNumber] = useState<number>(0);
   const [tokenId, setTokenId] = useState<number>(0);
 
   const { deployedAddress } = useContext(StateContext);
 
   const minNft = async () => {
+    if (!number || !tokenId) {
+      return;
+    }
     const tokens = Array.from({ length: number }, (_, i) => i).map((i) => ({
       id: (tokenId + i).toString(),
       blueprint: 'onchain-metadata',

@@ -2,12 +2,9 @@ import { CreateCollectionParams, ImmutableXClient, sign } from '@imtbl/imx-sdk';
 import React, { useContext, useState } from 'react';
 import { StateContext } from '../context/context';
 import { getSigner } from '../helper/getSigner';
+import { AdminClientProps } from '../interface/AdminClientProps';
 
-interface CreateCollectionProps {
-  adminClient: ImmutableXClient | undefined;
-}
-
-const CreateCollection = ({ adminClient }: CreateCollectionProps) => {
+const CreateCollection = ({ adminClient }: AdminClientProps) => {
   const [collectionParams, setCollectionParams] =
     useState<CreateCollectionParams>(Object);
 
