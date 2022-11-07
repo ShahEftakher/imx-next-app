@@ -1,21 +1,26 @@
-import axios from 'axios';
-import React, { useState } from 'react';
+// import axios from 'axios';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { StateContext } from '../context/context';
+import { UploadDirectoryV2 } from '../helper/uploadDirectory';
 
 const UploadDirectory = () => {
   const [filePath, setFilePath] = useState('');
+  const ref = useRef<HTMLInputElement>(null);
+  const [files, setFiles] = useState(Object);
+  const { setIpfsDirCID } = useContext(StateContext);
 
-  const uploadDirectory = async () => {
-    if (!filePath) {
-      return;
-    }
-
-    try {
-      const res = await axios.post(`/api/UploadDirectory?filePath=${filePath}`);
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
+  const uploadDirectoryToIpfs = async () => {
+    const response = await UploadDirectoryV2(files);
+    console.log(response);
+    setIpfsDirCID(response);
   };
+
+  useEffect(() => {
+    if (ref.current !== null) {
+      ref.current.setAttribute('directory', '');
+      ref.current.setAttribute('webkitdirectory', '');
+    }
+  }, [ref]);
 
   return (
     <div>
@@ -24,18 +29,19 @@ const UploadDirectory = () => {
           <label>File Path: </label>
           <input
             className="border-2 border-cyan-400 rounded"
-            type="text"
-            placeholder="Insert the file path to direcotry"
+            type="file"
+            ref={ref}
+            placeholder="Select the direcotry"
             onChange={(e) => {
-              setFilePath(e.target.value);
+              setFiles(e.target.files);
             }}
           />
         </div>
         <button
           className="border-4 p-2 bg-cyan-600 rounded-lg mt-4"
-          onClick={uploadDirectory}
+          onClick={uploadDirectoryToIpfs}
         >
-          Mint Tokens
+          Upload Files
         </button>
       </div>
       <div className="flex flex-col justify-center items-center border-teal-600 p-2 mt-3">
