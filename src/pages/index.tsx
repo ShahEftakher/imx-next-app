@@ -8,8 +8,10 @@ import DeployContract from '../components/DeployContract';
 import CreateCollection from '../components/CreateCollection';
 import MintNft from '../components/MintNft';
 import AddMetaDataSchema from '../components/AddMetaDataSchema';
+import UploadDirectory from '../components/UploadDirectory';
 
 enum FORMSTATE {
+  uploadDirectory = 'Upload',
   createProject = 'CreateProject',
   deployContract = 'DeployContract',
   createCollection = 'CreateCollection',
@@ -20,7 +22,7 @@ enum FORMSTATE {
 const Home: NextPage = () => {
   const adminClient: ImmutableXClient | undefined = useadminClient();
   const [formState, setFormState] = useState<FORMSTATE>(
-    FORMSTATE.createProject
+    FORMSTATE.uploadDirectory
   );
 
   const nextFormState = () => {
@@ -62,7 +64,9 @@ const Home: NextPage = () => {
                 </button>
               </div>
               <div className="border border-teal-600 rounded p-2">
-                {formState === FORMSTATE.deployContract ? (
+                {formState === FORMSTATE.uploadDirectory ? (
+                  <UploadDirectory />
+                ) : formState === FORMSTATE.deployContract ? (
                   <DeployContract />
                 ) : formState === FORMSTATE.createProject ? (
                   <CreateProject adminClient={adminClient} />
