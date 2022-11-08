@@ -4,14 +4,12 @@ import { StateContext } from '../context/context';
 import { UploadDirectoryV2 } from '../helper/uploadDirectory';
 
 const UploadDirectory = () => {
-  const [filePath, setFilePath] = useState('');
   const ref = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState(Object);
-  const { setIpfsDirCID } = useContext(StateContext);
+  const { isfsDirCID, setIpfsDirCID } = useContext(StateContext);
 
   const uploadDirectoryToIpfs = async () => {
     const response = await UploadDirectoryV2(files);
-    console.log(response);
     setIpfsDirCID(response);
   };
 
@@ -45,7 +43,7 @@ const UploadDirectory = () => {
         </button>
       </div>
       <div className="flex flex-col justify-center items-center border-teal-600 p-2 mt-3">
-        {/* <label>Contract deployed on: </label> <p>{}</p> */}
+        <label>CID: </label> <p>{isfsDirCID}</p>
       </div>
     </div>
   );
