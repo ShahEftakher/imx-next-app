@@ -10,7 +10,7 @@ const GenerateMetadataFiles = () => {
 
   const generateMetadata = async () => {
     try {
-      const res = await axios.post(`/api/GenerateMetadataFiles`, {
+      const res = await axios.post(`/api/generatemetadatafiles`, {
         description: description,
         startingID: startingID,
         tokenNumber: tokenNumber,
