@@ -9,9 +9,11 @@ import CreateCollection from '../components/CreateCollection';
 import MintNft from '../components/MintNft';
 import AddMetaDataSchema from '../components/AddMetaDataSchema';
 import UploadDirectory from '../components/UploadDirectory';
+import GenerateMetadataFiles from '../components/GenerateMetadataFiles';
 
 enum FORMSTATE {
   uploadDirectory = 'Upload',
+  generateMetadata = 'GenerateMetadata',
   createProject = 'CreateProject',
   deployContract = 'DeployContract',
   createCollection = 'CreateCollection',
@@ -66,6 +68,8 @@ const Home: NextPage = () => {
               <div className="border border-teal-600 rounded p-2">
                 {formState === FORMSTATE.uploadDirectory ? (
                   <UploadDirectory />
+                ) : formState === FORMSTATE.generateMetadata ? (
+                  <GenerateMetadataFiles />
                 ) : formState === FORMSTATE.deployContract ? (
                   <DeployContract />
                 ) : formState === FORMSTATE.createProject ? (
