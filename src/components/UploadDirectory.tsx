@@ -1,4 +1,3 @@
-// import axios from 'axios';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { StateContext } from '../context/context';
 import { UploadDirectoryV2 } from '../helper/uploadDirectory';
@@ -6,7 +5,7 @@ import { UploadDirectoryV2 } from '../helper/uploadDirectory';
 const UploadDirectory = () => {
   const ref = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState(Object);
-  const { isfsDirCID, setIpfsDirCID } = useContext(StateContext);
+  const { ipfsDirCID, setIpfsDirCID } = useContext(StateContext);
 
   const uploadDirectoryToIpfs = async () => {
     const response = await UploadDirectoryV2(files);
@@ -42,9 +41,23 @@ const UploadDirectory = () => {
           Upload Files
         </button>
       </div>
-      <div className="flex flex-col justify-center items-center border-teal-600 p-2 mt-3">
-        <label>CID: </label> <p>{isfsDirCID}</p>
-      </div>
+      {ipfsDirCID ? (
+        <div className="flex flex-col justify-center items-center border-teal-600 p-2 mt-3">
+          <label>CID: </label> <p>{ipfsDirCID}</p>
+          <div className="text-cyan-700">
+            <a
+              target="_blank"
+              href={'https://nftstorage.link/ipfs/' + ipfsDirCID}
+              rel="noopener noreferrer"
+            >
+              {' '}
+              {'https://nftstorage.link/ipfs/' + ipfsDirCID}
+            </a>
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
     </div>
   );
 };
