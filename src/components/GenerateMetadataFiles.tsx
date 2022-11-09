@@ -16,11 +16,12 @@ const GenerateMetadataFiles = () => {
         tokenNumber: tokenNumber,
         cid: ipfsDirCID,
       });
+      console.log(res);
     } catch (error) {
       console.log(error);
     }
   };
-
+ 
   return (
     <div>
       <div className="flex flex-col justify-center items-center mt-4">
@@ -61,12 +62,23 @@ const GenerateMetadataFiles = () => {
         >
           Generate Metadata
         </button>
-        <button
-          className="border-4 p-2 bg-cyan-600 rounded-lg mt-4"
-          onClick={generateMetadata}
-        >
-          Upload Metadata Directory
-        </button>
+        {ipfsDirCID ? (
+          <div className="flex flex-col justify-center items-center border-teal-600 p-2 mt-3">
+            <label>CID: </label> <p>{ipfsDirCID}</p>
+            <div className="text-cyan-700">
+              <a
+                target="_blank"
+                href={'https://nftstorage.link/ipfs/' + ipfsDirCID}
+                rel="noopener noreferrer"
+              >
+                {' '}
+                {'https://nftstorage.link/ipfs/' + ipfsDirCID}
+              </a>
+            </div>
+          </div>
+        ) : (
+          ''
+        )}
       </div>
     </div>
   );
