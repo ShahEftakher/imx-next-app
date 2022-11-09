@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { StateContext } from '../context/context';
 import { UploadDirectoryV2 } from '../helper/uploadDirectory';
 
-const UploadDirectory = () => {
+const UploadContentDirectory = () => {
   const ref = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState(Object);
   const { ipfsDirCID, setIpfsDirCID } = useContext(StateContext);
@@ -62,4 +62,4 @@ const UploadDirectory = () => {
   );
 };
 
-export default UploadDirectory;
+export default UploadContentDirectory;
