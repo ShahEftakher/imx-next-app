@@ -40,8 +40,8 @@ const DeployContract = () => {
   };
   return (
     <div>
+      <h3 className="text-center">Deploy Smart contract</h3>
       <div className="flex flex-col justify-center items-center mt-4">
-        <h3>Deploy Smart contract</h3>
         <div>
           <label>Contract Name: </label>
           <input

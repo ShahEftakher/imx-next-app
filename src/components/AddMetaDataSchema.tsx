@@ -44,8 +44,8 @@ const AddMetaDataSchema = ({ adminClient }: AdminClientProps) => {
 
   return (
     <div>
+      <h3 className="text-center">Add Metadataschema</h3>
       <div className="flex flex-col justify-center items-center mt-4 p-4">
-        <h3>Add Metadataschema</h3>
         <div>
           {metadataSchema.metadata?.map((data) => (
             <p key={data.name}>{JSON.stringify(data, null, 2)}</p>

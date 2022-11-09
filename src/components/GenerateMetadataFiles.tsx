@@ -24,8 +24,8 @@ const GenerateMetadataFiles = () => {
 
   return (
     <div>
+      <h3 className="text-center">Generate metadate files</h3>
       <div className="flex flex-col justify-center items-center mt-4">
-        <h3>Generate metadate files</h3>
         <div>
           <label>Starting Token ID: </label>
           <input

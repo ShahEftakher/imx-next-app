@@ -31,8 +31,8 @@ const UploadMetadata = () => {
 
   return (
     <div>
+      <h3 className="text-center">Upload Metadata</h3>
       <div className="flex flex-col justify-center items-center mt-4">
-        <h3>Upload Metadata</h3>
         <div>
           <label>File Path: </label>
           <input

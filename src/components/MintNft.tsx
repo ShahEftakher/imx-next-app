@@ -45,8 +45,8 @@ const MintNft = ({ adminClient }: AdminClientProps) => {
 
   return (
     <div>
+      <h3 className="text-center">Mint NFT</h3>
       <div className="flex flex-col justify-center items-center mt-4">
-        <h3>Mint NFT</h3>
         <div>
           <label>Contract Addess: </label>
           <input
