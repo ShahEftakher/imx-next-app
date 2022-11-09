@@ -33,6 +33,7 @@ const CreateProject = ({ adminClient }: CreateProjectProps) => {
 
   return (
     <div className="flex flex-col justify-center items-center">
+      <h3>Create Project</h3>
       <div>
         <label>Name: </label>
         <input

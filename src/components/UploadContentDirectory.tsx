@@ -30,8 +30,9 @@ const UploadContentDirectory = () => {
   return (
     <div>
       <div className="flex flex-col justify-center items-center mt-4">
+        <h3>Upload the Images</h3>
         <div>
-          <label>File Path: </label>
+          <label>Folder: </label>
           <input
             className="border-2 border-cyan-400 rounded"
             type="file"

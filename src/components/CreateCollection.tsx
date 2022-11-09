@@ -39,6 +39,7 @@ const CreateCollection = ({ adminClient }: AdminClientProps) => {
   return (
     <div>
       <div className="flex flex-col justify-center items-center mt-4">
+        <h3>Create Collection</h3>
         <div>
           <label>Collection Name: </label>
           <input
