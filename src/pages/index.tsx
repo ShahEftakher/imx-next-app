@@ -2,26 +2,9 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { ImmutableXClient } from '@imtbl/imx-sdk';
-import CreateProject from '../components/CreateProject';
 import { useadminClient } from '../hooks/useAdminClient';
-import DeployContract from '../components/DeployContract';
-import CreateCollection from '../components/CreateCollection';
-import MintNft from '../components/MintNft';
-import AddMetaDataSchema from '../components/AddMetaDataSchema';
-import UploadContentDirectory from '../components/UploadContentDirectory';
-import GenerateMetadataFiles from '../components/GenerateMetadataFiles';
-import UploadMetadata from '../components/UploadMetadata';
-
-enum FORMSTATE {
-  uploadDirectory = 'Upload',
-  generateMetadata = 'GenerateMetadata',
-  uploadMetadata = 'UploadMetadata',
-  createProject = 'CreateProject',
-  deployContract = 'DeployContract',
-  createCollection = 'CreateCollection',
-  addMetaDataSchema = 'AddMetadataSchema',
-  minCollection = 'MintCollection',
-}
+import { FORMSTATE } from '../config/FormState';
+import FormSelector from '../components/FormSelector';
 
 const Home: NextPage = () => {
   const adminClient: ImmutableXClient | undefined = useadminClient();
@@ -67,27 +50,7 @@ const Home: NextPage = () => {
                   Previous
                 </button>
               </div>
-              <div className="border border-teal-600 rounded p-2">
-                {formState === FORMSTATE.uploadDirectory ? (
-                  <UploadContentDirectory />
-                ) : formState === FORMSTATE.generateMetadata ? (
-                  <GenerateMetadataFiles />
-                ) : formState === FORMSTATE.uploadMetadata ? (
-                  <UploadMetadata />
-                ) : formState === FORMSTATE.deployContract ? (
-                  <DeployContract />
-                ) : formState === FORMSTATE.createProject ? (
-                  <CreateProject adminClient={adminClient} />
-                ) : formState === FORMSTATE.createCollection ? (
-                  <CreateCollection adminClient={adminClient} />
-                ) : formState === FORMSTATE.addMetaDataSchema ? (
-                  <AddMetaDataSchema adminClient={adminClient} />
-                ) : formState === FORMSTATE.minCollection ? (
-                  <MintNft adminClient={adminClient} />
-                ) : (
-                  ''
-                )}
-              </div>
+              <FormSelector formState={formState} adminClient={adminClient} />
               <div className="ml-8">
                 <button
                   className="bg-teal-700 rounded p-2"
