@@ -1,15 +1,23 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { StateContext } from '../context/context';
 import { UploadDirectoryV2 } from '../helper/uploadDirectory';
+import { cidToHTTP } from '../utils/cidToHTTP';
 
 const UploadContentDirectory = () => {
   const ref = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState(Object);
-  const { ipfsDirCID, setIpfsDirCID } = useContext(StateContext);
+  const { contentIPFSUrl, setContentIPFSUrl } = useContext(StateContext);
 
   const uploadDirectoryToIpfs = async () => {
-    const response = await UploadDirectoryV2(files);
-    setIpfsDirCID(response);
+    try {
+      if (!files) {
+        return;
+      }
+      const response = await UploadDirectoryV2(files);
+      setContentIPFSUrl(cidToHTTP(response));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -41,17 +49,13 @@ const UploadContentDirectory = () => {
           Upload Files
         </button>
       </div>
-      {ipfsDirCID ? (
+      {contentIPFSUrl ? (
         <div className="flex flex-col justify-center items-center border-teal-600 p-2 mt-3">
-          <label>CID: </label> <p>{ipfsDirCID}</p>
+          {/* <label>CID: </label> <p>{ipfsDirCID}</p> */}
           <div className="text-cyan-700">
-            <a
-              target="_blank"
-              href={'https://nftstorage.link/ipfs/' + ipfsDirCID}
-              rel="noopener noreferrer"
-            >
+            <a target="_blank" href={contentIPFSUrl} rel="noopener noreferrer">
               {' '}
-              {'https://nftstorage.link/ipfs/' + ipfsDirCID}
+              {contentIPFSUrl}
             </a>
           </div>
         </div>

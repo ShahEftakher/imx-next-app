@@ -3,10 +3,9 @@ import os from 'os';
 const rimraf = require('rimraf');
 
 const hanlder = async (req: any, res: any) => {
-  const { tokenNumber, startingID, cid, desc } = req.body;
+  const { tokenNumber, startingID, contentUrl, desc } = req.body;
   const filePath = `${os.homedir()}/Documents`;
-  const apiUrl = 'https://nftstorage.link/ipfs/' + cid;
-  console.log(apiUrl);
+  console.log(contentUrl);
 
   if (fs.existsSync(`${filePath}/metadata`)) {
     rimraf.sync(`${filePath}/metadata`);
@@ -17,9 +16,9 @@ const hanlder = async (req: any, res: any) => {
     const jsonData = `{
           "name": ${index},
           "description": ${desc},
-          "image_url": ${apiUrl}/${index}.png,
+          "image_url": ${contentUrl}/${index}.png,
         };`;
-    console.log(index);
+    console.log(desc);
     try {
       fs.writeFileSync(`${filePath}/metadata/${index}`, jsonData);
     } catch (error) {

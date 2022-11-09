@@ -6,22 +6,22 @@ const GenerateMetadataFiles = () => {
   const [startingID, setStartingID] = useState<number>(0);
   const [tokenNumber, setTokenNumber] = useState<number>(0);
   const [description, setDescription] = useState<string>('');
-  const { ipfsDirCID } = useContext(StateContext);
+  const { contentIPFSUrl } = useContext(StateContext);
 
   const generateMetadata = async () => {
     try {
       const res = await axios.post(`/api/generatemetadatafiles`, {
-        description: description,
+        desc: description,
         startingID: startingID,
         tokenNumber: tokenNumber,
-        cid: ipfsDirCID,
+        contentUrl: contentIPFSUrl,
       });
       console.log(res);
     } catch (error) {
       console.log(error);
     }
   };
- 
+
   return (
     <div>
       <div className="flex flex-col justify-center items-center mt-4">
@@ -62,17 +62,17 @@ const GenerateMetadataFiles = () => {
         >
           Generate Metadata
         </button>
-        {ipfsDirCID ? (
+        {contentIPFSUrl ? (
           <div className="flex flex-col justify-center items-center border-teal-600 p-2 mt-3">
-            <label>CID: </label> <p>{ipfsDirCID}</p>
             <div className="text-cyan-700">
+              <label>Content URL: </label>
               <a
                 target="_blank"
-                href={'https://nftstorage.link/ipfs/' + ipfsDirCID}
+                href={contentIPFSUrl}
                 rel="noopener noreferrer"
               >
                 {' '}
-                {'https://nftstorage.link/ipfs/' + ipfsDirCID}
+                {contentIPFSUrl}
               </a>
             </div>
           </div>
