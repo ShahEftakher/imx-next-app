@@ -10,10 +10,12 @@ import MintNft from '../components/MintNft';
 import AddMetaDataSchema from '../components/AddMetaDataSchema';
 import UploadContentDirectory from '../components/UploadContentDirectory';
 import GenerateMetadataFiles from '../components/GenerateMetadataFiles';
+import UploadMetadata from '../components/UploadMetadata';
 
 enum FORMSTATE {
   uploadDirectory = 'Upload',
   generateMetadata = 'GenerateMetadata',
+  uploadMetadata = 'UploadMetadata',
   createProject = 'CreateProject',
   deployContract = 'DeployContract',
   createCollection = 'CreateCollection',
@@ -70,6 +72,8 @@ const Home: NextPage = () => {
                   <UploadContentDirectory />
                 ) : formState === FORMSTATE.generateMetadata ? (
                   <GenerateMetadataFiles />
+                ) : formState === FORMSTATE.uploadMetadata ? (
+                  <UploadMetadata />
                 ) : formState === FORMSTATE.deployContract ? (
                   <DeployContract />
                 ) : formState === FORMSTATE.createProject ? (
