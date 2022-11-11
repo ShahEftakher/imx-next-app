@@ -1,8 +1,6 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import { NFTStorage } from 'nft.storage';
-import { NEXT_NFT_STORAGE_API_KEY } from '../config';
 import { StateContext } from '../context/context';
+import { UploadDirectoryV2 } from '../helper/uploadDirectory';
 import { cidToHTTP } from '../utils/cidToHTTP';
 
 const UploadMetadata = () => {
@@ -12,8 +10,7 @@ const UploadMetadata = () => {
 
   const uploadMetadaDirectory = async () => {
     try {
-      const storageClient = new NFTStorage({ token: NEXT_NFT_STORAGE_API_KEY });
-      const res = await storageClient.storeDirectory(files);
+      const res = await UploadDirectoryV2(files);
       console.log(res);
       console.log(cidToHTTP(res));
       setMetadataURL(cidToHTTP(res));
