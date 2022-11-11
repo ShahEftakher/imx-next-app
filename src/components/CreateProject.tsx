@@ -8,6 +8,7 @@ interface CreateProjectProps {
 const CreateProject = ({ adminClient }: CreateProjectProps) => {
   const [projectParams, setProjectParams] =
     useState<CreateProjectParams>(Object);
+  const [projectID, setProjectId] = useState<string>('');
 
   const createproject = async () => {
     if (
@@ -21,8 +22,10 @@ const CreateProject = ({ adminClient }: CreateProjectProps) => {
       return;
     }
     try {
+      console.log(projectParams);
       const res = await adminClient.createProject(projectParams);
-      console.log(res);
+      setProjectId(res.id.toString());
+      console.log(res.id);
       projectParams.company_name = '';
       projectParams.contact_email = '';
       projectParams.name = '';
@@ -83,6 +86,7 @@ const CreateProject = ({ adminClient }: CreateProjectProps) => {
         >
           Create Project
         </button>
+        <div>Project ID: {projectID}</div>
       </div>
     </div>
   );
