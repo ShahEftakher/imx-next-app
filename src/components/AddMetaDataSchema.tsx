@@ -9,12 +9,13 @@ import { AdminClientProps } from '../interface/AdminClientProps';
 const AddMetaDataSchema = ({ adminClient }: AdminClientProps) => {
   const [metadataSchema, setMetaDataSchema] =
     useState<AddMetadataSchemaToCollectionParams>(Object);
-  const { deployedContractAddress } = useContext(StateContext);
+  const { deployedAddress } = useContext(StateContext);
 
   const addMetadataSchema = async () => {
     try {
+      console.log(deployedAddress);
       const res = await adminClient?.addMetadataSchemaToCollection(
-        deployedContractAddress,
+        deployedAddress,
         metadataSchema
       );
       console.log(res);
