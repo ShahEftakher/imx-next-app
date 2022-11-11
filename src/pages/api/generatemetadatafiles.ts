@@ -13,11 +13,12 @@ const hanlder = async (req: any, res: any) => {
   fs.mkdirSync(`${filePath}/metadata`);
 
   for (let index = startingID; index <= tokenNumber + startingID - 1; index++) {
-    const jsonData = `{
-          "name": ${index},
-          "description": ${desc},
-          "image_url": ${contentUrl}/${index}.png,
-        };`;
+    const jsonData = 
+`{
+  "name": "${index}",
+  "description": "${desc}",
+  "image_url": "${contentUrl}/${index}.png",
+}`;
     console.log(desc);
     try {
       fs.writeFileSync(`${filePath}/metadata/${index}`, jsonData);
