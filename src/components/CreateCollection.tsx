@@ -1,25 +1,19 @@
-import { CreateCollectionParams, ImmutableXClient, sign } from '@imtbl/imx-sdk';
-import React, { useContext, useState } from 'react';
+import { CreateCollectionParams } from '@imtbl/imx-sdk';
+import React, { useContext, useEffect, useState } from 'react';
 import { StateContext } from '../context/context';
-import { getSigner } from '../helper/getSigner';
 import { AdminClientProps } from '../interface/AdminClientProps';
 
 const CreateCollection = ({ adminClient }: AdminClientProps) => {
   const [collectionParams, setCollectionParams] =
     useState<CreateCollectionParams>(Object);
 
-  const { deployedAddress } = useContext(StateContext);
+  const { deployedAddress, metadataURL } = useContext(StateContext);
 
   const createCollection = async () => {
     if (!adminClient) {
       return;
     }
-    const signer = await getSigner();
-    const signerAddress = (await signer.getAddress()).toLowerCase();
-    setCollectionParams((preState) => ({
-      ...preState,
-      owner_public_key: signerAddress,
-    }));
+    console.log(metadataURL);
     if (
       !collectionParams.contract_address ||
       !collectionParams.name ||
@@ -36,6 +30,20 @@ const CreateCollection = ({ adminClient }: AdminClientProps) => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (metadataURL) {
+      setCollectionParams((preState: any) => ({
+        ...preState,
+        metadata_api_url: metadataURL,
+      }));
+      setCollectionParams((preState: any) => ({
+        ...preState,
+        contract_address: deployedAddress,
+      }));
+    }
+  }, [metadataURL]);
+
   return (
     <div>
       <h3 className="text-center">Create Collection</h3>
@@ -64,6 +72,20 @@ const CreateCollection = ({ adminClient }: AdminClientProps) => {
               setCollectionParams((preState: any) => ({
                 ...preState,
                 contract_address: event.target.value,
+              }));
+            }}
+          />
+        </div>
+        <div>
+          <label>Uncompressed Public address: </label>
+          <input
+            className="border-2 border-cyan-400 rounded"
+            type="text"
+            value={collectionParams.owner_public_key}
+            onChange={(event) => {
+              setCollectionParams((preState) => ({
+                ...preState,
+                owner_public_key: event.target.value,
               }));
             }}
           />
@@ -100,7 +122,7 @@ const CreateCollection = ({ adminClient }: AdminClientProps) => {
           <label>Project ID: </label>
           <input
             className="border-2 border-cyan-400 rounded"
-            type="text"
+            type="number"
             value={collectionParams.project_id}
             onChange={(event) => {
               setCollectionParams((preState: any) => ({
