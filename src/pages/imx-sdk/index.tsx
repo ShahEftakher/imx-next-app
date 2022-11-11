@@ -87,7 +87,7 @@ const Home: NextPage = () => {
       registrationContractAddress: SANDBOX_REGISTRATION_ADDRESS,
     });
 
-    const projects = await minterClient.getProjects();
+    // const projects = await minterClient.getProjects();
 
     const result = await minterClient.mintV2([
       {
@@ -99,7 +99,7 @@ const Home: NextPage = () => {
               {
                 id: '5',
                 blueprint:
-                  'https://gateway.pinata.cloud/ipfs/QmSLkeGyDuJgQeps5mLuVyaeMac4AM7hKR2GLCqSzuNiay',
+                  'sazid',
               },
             ],
           },
@@ -119,31 +119,29 @@ const Home: NextPage = () => {
   };
 
   const transferAsset = async () => {
-    // const result = await link.transfer([
-    //   {
-    //     type: ERC721TokenType.ERC721,
-    //     tokenId: '1',
-    //     toAddress: '0x3a334A490Fdd7f1c8BB7e3e004dCb6832E05DE9c',
-    //     tokenAddress: '0xe5d2f645f20938470cb50f3736e010042b69c77a',
-    //   },
-    // ]);
-    let result;
+    const tempList: {
+      type: ERC721TokenType;
+      tokenId: any;
+      toAddress: string;
+      tokenAddress: any;
+    }[] = [];
+
+    assets.map(async (asset: any) => {
+      tempList.push({
+        type: ERC721TokenType.ERC721,
+        tokenId: asset.token_id,
+        toAddress: '0x3a334A490Fdd7f1c8BB7e3e004dCb6832E05DE9c',
+        tokenAddress: asset.token_address,
+      });
+    });
+
     try {
-      result = await link.transfer([
-        {
-          type: ERC721TokenType.ERC721,
-          tokenId: '2',
-          toAddress: '0x3a334A490Fdd7f1c8BB7e3e004dCb6832E05DE9c',
-          tokenAddress: '0xe5d2f645f20938470cb50f3736e010042b69c77a',
-        },
-      ]);
+      const result = await link.transfer(tempList);
+      console.log(result);
     } catch (error) {
       console.log(error);
     }
-
-    console.log(result);
   };
-
 
   //question: how is marketplace connected with metamask
   //how is getting the signer for transaction
@@ -225,17 +223,22 @@ const Home: NextPage = () => {
           <p className="">{JSON.stringify(user, null, 2)}</p>
           <div>
             {assets?.map((asset: any) => (
-              <p className="">{JSON.stringify(asset, null, 2)}</p>
+              <div
+                className="mb-4 border-2 border-black rounded-md p-4"
+                key={asset.created_at + `${Math.random()}}`}
+              >
+                <pre> {JSON.stringify(asset, null, 4)}</pre>
+              </div>
             ))}
           </div>
           <div>
             {collections?.map((collection: any) => (
-              <p className="">{JSON.stringify(collection, null, 2)}</p>
+              <pre className="mb-4">{JSON.stringify(collection, null, 4)}</pre>
             ))}
           </div>
           <div>
             {sellOrders?.map((order: any) => (
-              <p className="">{JSON.stringify(order, null, 2)}</p>
+              <pre className="mb-4">{JSON.stringify(order, null, 4)}</pre>
             ))}
           </div>
         </div>
