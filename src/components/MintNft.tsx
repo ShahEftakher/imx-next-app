@@ -1,4 +1,4 @@
-import { ImmutableMethodParams, ImmutableXClient, sign } from '@imtbl/imx-sdk';
+import { ImmutableMethodParams } from '@imtbl/imx-sdk';
 import React, { useContext, useState } from 'react';
 import { StateContext } from '../context/context';
 import { getSigner } from '../helper/getSigner';
@@ -7,6 +7,7 @@ import { AdminClientProps } from '../interface/AdminClientProps';
 const MintNft = ({ adminClient }: AdminClientProps) => {
   const [number, setNumber] = useState<number>(0);
   const [tokenId, setTokenId] = useState<number>(0);
+  const [contractAddress, setContractAddress] = useState<string>();
 
   const { deployedAddress } = useContext(StateContext);
 
@@ -23,7 +24,7 @@ const MintNft = ({ adminClient }: AdminClientProps) => {
 
     const payload: ImmutableMethodParams.ImmutableOffchainMintV2ParamsTS = [
       {
-        contractAddress: deployedAddress,
+        contractAddress: contractAddress ? contractAddress : deployedAddress,
         users: [
           {
             etherKey: signer.toLowerCase(),
@@ -51,9 +52,11 @@ const MintNft = ({ adminClient }: AdminClientProps) => {
           <label>Contract Addess: </label>
           <input
             className="border-2 border-cyan-400 rounded"
-            value={deployedAddress}
             type="text"
-            disabled
+            placeholder={deployedAddress}
+            onChange={(e) => {
+              setContractAddress(e.target.value);
+            }}
           />
         </div>
         <div>
