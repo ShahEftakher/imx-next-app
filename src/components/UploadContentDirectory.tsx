@@ -3,6 +3,11 @@ import { StateContext } from '../context/context';
 import { UploadDirectoryV2 } from '../helper/uploadDirectory';
 import { cidToHTTP } from '../utils/cidToHTTP';
 
+/**
+ * Cannot keep image files under a directory
+ * Why? I don't know it just does not work
+ */
+
 const UploadContentDirectory = () => {
   const ref = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState(Object);
