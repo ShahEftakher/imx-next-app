@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ERC721TokenType, ImmutableXClient, Link } from '@imtbl/imx-sdk';
 import {
   ALCHEMY_API_ENDPOINT,
@@ -12,6 +12,7 @@ import {
 import { useClient } from '../../hooks/useClient';
 import { ethers } from 'ethers';
 import { configureProvider } from '../../helper/configureProvider';
+import { useadminClient } from '../../hooks/useAdminClient';
 
 interface UserInterface {
   address: string;
@@ -27,7 +28,9 @@ const Home: NextPage = () => {
   const [orderCursor, setOrderCursor] = useState('');
   const [collectionCursor, setCollectionCursor] = useState('');
   const [collections, setCollections] = useState(Array);
+  const [projects, setProjects] = useState<Array<any> | undefined>();
   const client: ImmutableXClient = useClient();
+  const adminClient: ImmutableXClient | undefined = useadminClient();
 
   const link = new Link(NEXT_APP_SANDBOX_LINK_URL);
 
@@ -44,6 +47,12 @@ const Home: NextPage = () => {
     setCollectionCursor(tempCollections.cursor);
     setCollections(tempCollections.result);
     console.log(tempCollections.cursor);
+  };
+
+  const getProjects = async () => {
+    const res = await adminClient?.getProjects();
+    console.log(res?.result);
+    setProjects(res?.result);
   };
 
   const getSellOrders = async () => {
@@ -98,8 +107,7 @@ const Home: NextPage = () => {
             tokens: [
               {
                 id: '5',
-                blueprint:
-                  'sazid',
+                blueprint: 'sazid',
               },
             ],
           },
@@ -116,6 +124,7 @@ const Home: NextPage = () => {
     setCollections([]);
     setOrderCursor('');
     setSellOrders([]);
+    setProjects([]);
   };
 
   const transferAsset = async () => {
@@ -197,6 +206,12 @@ const Home: NextPage = () => {
             Transfer
           </button>
           <button
+            className="border-4 p-2 bg-green-600 rounded-lg"
+            onClick={getProjects}
+          >
+            Get Project
+          </button>
+          <button
             className="border-4 p-2 bg-yellow-600 rounded-lg"
             onClick={mintNFTV2}
           >
@@ -228,6 +243,16 @@ const Home: NextPage = () => {
                 key={asset.created_at + `${Math.random()}}`}
               >
                 <pre> {JSON.stringify(asset, null, 4)}</pre>
+              </div>
+            ))}
+          </div>
+          <div>
+            {projects?.map((project: any) => (
+              <div
+                className="mb-4 border-2 border-black rounded-md p-4"
+                key={project.created_at + `${Math.random()}}`}
+              >
+                <pre> {JSON.stringify(project, null, 4)}</pre>
               </div>
             ))}
           </div>
