@@ -29,7 +29,9 @@ const Home: NextPage = () => {
   const [collectionCursor, setCollectionCursor] = useState('');
   const [collections, setCollections] = useState(Array);
   const [projects, setProjects] = useState<Array<any> | undefined>();
+  //without signer
   const client: ImmutableXClient = useClient();
+  //with signer
   const adminClient: ImmutableXClient | undefined = useadminClient();
 
   const link = new Link(NEXT_APP_SANDBOX_LINK_URL);
@@ -49,12 +51,14 @@ const Home: NextPage = () => {
     console.log(tempCollections.cursor);
   };
 
+  //projects of an user
   const getProjects = async () => {
     const res = await adminClient?.getProjects();
     console.log(res?.result);
     setProjects(res?.result);
   };
 
+  //sell listings
   const getSellOrders = async () => {
     const tempOrders = await client.getOrdersV3({ cursor: orderCursor });
     console.log(tempOrders.cursor);
@@ -62,6 +66,7 @@ const Home: NextPage = () => {
     setSellOrders(tempOrders.result);
   };
 
+  //user assets
   const getUserAssets = async () => {
     const tempAssets = await client.getAssets({ user: user.address });
     setAssets(tempAssets.result);
@@ -77,6 +82,7 @@ const Home: NextPage = () => {
     console.log(balance.balance.toString());
   };
 
+  //specific collection information
   const getCollectionInfo = async () => {
     const tempCollectionInfo = await client.getCollection({
       address: '0xe5d2f645f20938470cb50f3736e010042b69c77a',
@@ -85,6 +91,7 @@ const Home: NextPage = () => {
     console.log(tempCollectionInfo);
   };
 
+  //mint function
   const mintNFTV2 = async () => {
     const provider = await configureProvider();
     const signer = provider.getSigner();
@@ -127,6 +134,7 @@ const Home: NextPage = () => {
     setProjects([]);
   };
 
+  //transfer
   const transferAsset = async () => {
     const tempList: {
       type: ERC721TokenType;
