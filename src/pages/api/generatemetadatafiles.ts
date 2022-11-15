@@ -17,7 +17,7 @@ const hanlder = async (req: any, res: any) => {
 `{
   "name": "${index}",
   "description": "${desc}",
-  "image_url": "${contentUrl}/${index}.png",
+  "image_url": "${contentUrl}/${index}.png"
 }`;
     console.log(desc);
     try {
