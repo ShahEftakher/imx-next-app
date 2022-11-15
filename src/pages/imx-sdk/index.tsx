@@ -1,3 +1,5 @@
+//update update collection
+
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
@@ -76,7 +78,7 @@ const Home: NextPage = () => {
   //possible to know anyones balance
   const getBalance = async () => {
     const balance = await client.getBalance({
-      user: '0x3a334A490Fdd7f1c8BB7e3e004dCb6832E05DE9c',
+      user: '0x44C61C790DC1CE42bff80918BFbA2Da9Bcc43302',
       tokenAddress: 'eth',
     });
     console.log(balance.balance.toString());
@@ -85,7 +87,7 @@ const Home: NextPage = () => {
   //specific collection information
   const getCollectionInfo = async () => {
     const tempCollectionInfo = await client.getCollection({
-      address: '0xe5d2f645f20938470cb50f3736e010042b69c77a',
+      address: '0x3a334A490Fdd7f1c8BB7e3e004dCb6832E05DE9c',
     });
 
     console.log(tempCollectionInfo);
@@ -144,12 +146,19 @@ const Home: NextPage = () => {
     }[] = [];
 
     assets.map(async (asset: any) => {
-      tempList.push({
-        type: ERC721TokenType.ERC721,
-        tokenId: asset.token_id,
-        toAddress: '0x3a334A490Fdd7f1c8BB7e3e004dCb6832E05DE9c',
-        tokenAddress: asset.token_address,
-      });
+      console.log(asset.token_id);
+      if (
+        asset.token_id !== '1' &&
+        asset.token_id !== '2' &&
+        asset.token_id !== '3'
+      ) {
+        tempList.push({
+          type: ERC721TokenType.ERC721,
+          tokenId: asset.token_id,
+          toAddress: '0x3a334A490Fdd7f1c8BB7e3e004dCb6832E05DE9c',
+          tokenAddress: asset.token_address,
+        });
+      }
     });
 
     try {
@@ -158,6 +167,21 @@ const Home: NextPage = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const updateCollection = async () => {
+    try {
+      const res = await adminClient?.updateCollection(
+        '0x55967b06d35da79d819cbb1ec7c8832f0df7ac4c',
+        {
+          metadata_api_url:
+            'https://nftstorage.link/ipfs/bafybeiegywg6s7o3ucbroerlm47hyymgzdn7rqpqbm6k6zgitkku7cqlmy',
+          description: 'updated description',
+        }
+      );
+
+      console.log(res);
+    } catch (error) {}
   };
 
   //question: how is marketplace connected with metamask
@@ -230,6 +254,14 @@ const Home: NextPage = () => {
             onClick={getUserAssets}
           >
             Get Assets
+          </button>
+        </div>
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={updateCollection}
+            className="border-4 p-2 bg-red-600 rounded-lg"
+          >
+            Update Collection
           </button>
         </div>
         <div className="flex justify-center mt-4">
