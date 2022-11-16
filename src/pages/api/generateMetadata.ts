@@ -10,10 +10,11 @@ const handler = async (req: any, res: any) => {
     fs.mkdirSync(`${filePath}/${folderName}`);
   }
 
-  const jsonData = `{
+  const jsonData = 
+`{
   "name": "${name}",
   "description": "${description}",
-  "image_url": "${ipfsUrl}",
+  "image_url": "${ipfsUrl}"
 }`;
 
   try {
